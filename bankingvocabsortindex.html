@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banking Vocabulary Sort</title>
+  <style>
+    :root {
+      --navy: #17324d;
+      --blue: #246b9e;
+      --light-blue: #eaf5fc;
+      --green: #19733c;
+      --light-green: #e5f6ea;
+      --red: #b42318;
+      --light-red: #fff0ee;
+      --gold: #ffca52;
+      --gray: #667085;
+      --border: #cbd5e1;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #f4f7fa;
+      color: #17202a;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.45;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      color: var(--white);
+      padding: 26px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
+    }
+
+    header p {
+      margin: 0;
+    }
+
+    main {
+      width: min(1100px, 94%);
+      margin: 22px auto 50px;
+    }
+
+    .panel {
+      background: var(--white);
+      border: 1px solid #dfe7ee;
+      border-radius: 14px;
+      box-shadow: 0 5px 18px rgba(23, 50, 77, 0.08);
+      padding: 18px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: end;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: end;
+    }
+
+    label {
+      display: block;
+      color: var(--navy);
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    select,
+    button {
+      min-height: 42px;
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    select {
+      max-width: 420px;
+      padding: 8px;
+      border: 2px solid var(--border);
+      background: var(--white);
+    }
+
+    button {
+      border: none;
+      padding: 9px 15px;
+      background: var(--blue);
+      color: var(--white);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    button:hover,
+    button:focus {
+      background: var(--navy);
+    }
+
+    button.secondary {
+      background: #58697a;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .scoreboard {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .score-item {
+      background: var(--light-blue);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .score-item strong {
+      display: block;
+      color: var(--navy);
+      font-size: 1.25rem;
+    }
+
+    .progress-track {
+      height: 14px;
+      overflow: hidden;
+      margin: 14px 0 20px;
+      background: #e4eaf0;
+      border-radius: 999px;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: var(--green);
+      transition: width 0.25s ease;
+    }
+
+    .instructions {
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      background: #fff8e6;
+      border-left: 5px solid var(--gold);
+      border-radius: 8px;
+    }
+
+    .activity-grid {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .term-card,
+    .definition-card {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: var(--white);
+    }
+
+    .term-card {
+      position: sticky;
+      top: 12px;
+      padding: 22px;
+      text-align: center;
+    }
+
+    .lesson-label {
+      color: var(--gray);
+      font-weight: 700;
+    }
+
+    .term {
+      margin: 12px 0 6px;
+      color: var(--navy);
+      font-size: clamp(1.5rem, 4vw, 2.15rem);
+    }
+
+    .term-number {
+      color: var(--gray);
+    }
+
+    .definitions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .definition-card {
+      width: 100%;
+      padding: 14px;
+      color: #17202a;
+      text-align: left;
+      font-weight: 400;
+      cursor: pointer;
+    }
+
+    .definition-card:hover,
+    .definition-card:focus {
+      border-color: var(--blue);
+      background: var(--light-blue);
+    }
+
+    .definition-card.correct {
+      border-color: var(--green);
+      background: var(--light-green);
+      color: #0c5129;
+    }
+
+    .definition-card.incorrect {
+      border-color: var(--red);
+      background: var(--light-red);
+      color: #7a1a12;
+      animation: shake 0.25s linear;
+    }
+
+    .feedback {
+      min-height: 52px;
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 9px;
+      font-weight: 700;
+    }
+
+    .feedback.neutral {
+      background: #f1f5f9;
+      color: var(--navy);
+    }
+
+    .feedback.correct {
+      background: var(--light-green);
+      color: var(--green);
+    }
+
+    .feedback.incorrect {
+      background: var(--light-red);
+      color: var(--red);
+    }
+
+    .completion {
+      text-align: center;
+      padding: 32px 14px;
+    }
+
+    .completion h2 {
+      color: var(--green);
+      font-size: 2rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    @media (max-width: 740px) {
+      .scoreboard {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .activity-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .term-card {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Banking Vocabulary Sort</h1>
+    <p>Match each banking term to its correct definition.</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="controls">
+        <div class="control-group">
+          <div>
+            <label for="lessonSelect">Vocabulary set</label>
+            <select id="lessonSelect">
+              <option value="all">All lessons</option>
+              <option value="2-1">Lesson 2-1: Checking Accounts</option>
+              <option value="2-2">Lesson 2-2: Bank Statements</option>
+              <option value="2-3">Lesson 2-3: Savings Accounts</option>
+              <option value="2-4">Lesson 2-4: Compound Interest</option>
+              <option value="2-6">Lesson 2-6: Continuous Compounding</option>
+            </select>
+          </div>
+
+          <button id="startButton">Start / Restart</button>
+        </div>
+
+        <div class="control-group">
+          <button id="skipButton" class="secondary">Skip Term</button>
+        </div>
+      </div>
+
+      <div class="scoreboard" aria-label="Score">
+        <div class="score-item">
+          <strong id="matchedCount">0</strong>
+          Matched
+        </div>
+        <div class="score-item">
+          <strong id="correctCount">0</strong>
+          Correct choices
+        </div>
+        <div class="score-item">
+          <strong id="attemptCount">0</strong>
+          Attempts
+        </div>
+        <div class="score-item">
+          <strong id="accuracyCount">0%</strong>
+          Accuracy
+        </div>
+      </div>
+
+      <div
+        class="progress-track"
+        role="progressbar"
+        aria-label="Activity progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+      >
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+
+      <div class="instructions">
+        Read the term, then select its matching definition. Incorrect
+        choices can be tried again. Correct matches are removed from the set.
+      </div>
+
+      <div id="activityArea" class="activity-grid">
+        <article class="term-card">
+          <div id="lessonLabel" class="lesson-label"></div>
+          <h2 id="termText" class="term">Select Start / Restart</h2>
+          <div id="termNumber" class="term-number"></div>
+        </article>
+
+        <div>
+          <div
+            id="definitionList"
+            class="definitions"
+            aria-label="Definition choices"
+          ></div>
+
+          <div
+            id="feedback"
+            class="feedback neutral"
+            role="status"
+            aria-live="polite"
+          >
+            Choose a vocabulary set and begin.
+          </div>
+        </div>
+      </div>
+
+      <div id="completionArea" class="completion hidden">
+        <h2>Activity Complete!</h2>
+        <p id="finalResults"></p>
+        <button id="playAgainButton">Play Again</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const vocabulary = [
+      {
+        lesson: "2-1",
+        term: "Checking account",
+        definition:
+          "An account at a bank that allows a customer to deposit money and make withdrawals using a paper check or electronic transfer."
+      },
+      {
+        lesson: "2-1",
+        term: "Check",
+        definition:
+          "A written order telling a bank to transfer money from an account to the check holder."
+      },
+      {
+        lesson: "2-1",
+        term: "Electronic funds transfer (EFT)",
+        definition:
+          "The process of moving funds electronically from an account in one bank to an account in another bank; also called an electronic check or e-check."
+      },
+      {
+        lesson: "2-1",
+        term: "Payee",
+        definition:
+          "The receiver of transferred funds or the person to whom a check is written."
+      },
+      {
+        lesson: "2-1",
+        term: "Drawer",
+        definition:
+          "The account owner who writes a check."
+      },
+      {
+        lesson: "2-1",
+        term: "Check clearing",
+        definition:
+          "The process in which a bank pays a check by transferring funds from the checking account."
+      },
+      {
+        lesson: "2-1",
+        term: "Deposit slip",
+        definition:
+          "A form completed when adding money to a bank account."
+      },
+      {
+        lesson: "2-1",
+        term: "Automated teller machine (ATM)",
+        definition:
+          "A machine providing 24-hour bank access for deposits, transfers, and withdrawals."
+      },
+      {
+        lesson: "2-1",
+        term: "Personal identification number (PIN)",
+        definition:
+          "A numerical password that allows access to an ATM."
+      },
+      {
+        lesson: "2-1",
+        term: "Direct deposit",
+        definition:
+          "Payroll or other payments deposited directly and electronically into a bank account."
+      },
+      {
+        lesson: "2-1",
+        term: "Hold",
+        definition:
+          "Money in an account that is not released until the bank that issued a check pays it."
+      },
+      {
+        lesson: "2-1",
+        term: "Endorse",
+        definition:
+          "To sign the back of a check when cashing or depositing it."
+      },
+      {
+        lesson: "2-1",
+        term: "Cancelled",
+        definition:
+          "Describes a check that has been processed and paid to the payee."
+      },
+      {
+        lesson: "2-1",
+        term: "Insufficient funds",
+        definition:
+          "A condition in which an account does not contain enough money to cover a check issued against it."
+      },
+      {
+        lesson: "2-1",
+        term: "Overdraft protection",
+        definition:
+          "A service that pays a check when the account lacks enough funds; a fee is charged and the money must be repaid."
+      },
+      {
+        lesson: "2-1",
+        term: "Maintenance fee",
+        definition:
+          "A fee some banks charge for access to checking or savings accounts."
+      },
+      {
+        lesson: "2-1",
+        term: "Interest",
+        definition:
+          "A percentage of the money in an account that a bank pays on certain accounts."
+      },
+      {
+        lesson: "2-1",
+        term: "Single account",
+        definition:
+          "An account with one owner who can make transactions."
+      },
+      {
+        lesson: "2-1",
+        term: "Joint account",
+        definition:
+          "An account with more than one owner, with all owners having equal access."
+      },
+      {
+        lesson: "2-1",
+        term: "Check register",
+        definition:
+          "A record of checking-account transactions, including checks, deposits, fees, and ATM withdrawals."
+      },
+      {
+        lesson: "2-1",
+        term: "Debit",
+        definition:
+          "A withdrawal from a bank account."
+      },
+      {
+        lesson: "2-1",
+        term: "Credit",
+        definition:
+          "A payment made to reduce a debt; in a debt record, it may be identified with a negative sign."
+      },
+      {
+        lesson: "2-2",
+        term: "Account number",
+        definition:
+          "A number on checks, deposit slips, and bank statements that identifies the account owner."
+      },
+      {
+        lesson: "2-2",
+        term: "Bank statement",
+        definition:
+          "A record containing all account transactions during a period of approximately one month."
+      },
+      {
+        lesson: "2-2",
+        term: "Statement period",
+        definition:
+          "The range of dates covered by the transactions shown on a bank statement."
+      },
+      {
+        lesson: "2-2",
+        term: "Starting balance",
+        definition:
+          "The amount of money in a checking account at the beginning of a statement period."
+      },
+      {
+        lesson: "2-2",
+        term: "Ending balance",
+        definition:
+          "The amount of money in a checking account at the end of a statement period."
+      },
+      {
+        lesson: "2-2",
+        term: "Outstanding deposits",
+        definition:
+          "Deposits recorded by the account holder that do not yet appear on the bank statement."
+      },
+      {
+        lesson: "2-2",
+        term: "Outstanding checks",
+        definition:
+          "Checks recorded by the account holder that do not yet appear on the bank statement."
+      },
+      {
+        lesson: "2-3",
+        term: "Savings account",
+        definition:
+          "An account in which a bank pays interest for the use of deposited money."
+      },
+      {
+        lesson: "2-3",
+        term: "Interest rate",
+        definition:
+          "The percentage rate a bank pays on money held in certain accounts."
+      },
+      {
+        lesson: "2-3",
+        term: "Principal",
+        definition:
+          "The balance or amount of money in an account, or the original amount borrowed."
+      },
+      {
+        lesson: "2-3",
+        term: "Annual percentage rate (APR)",
+        definition:
+          "The interest rate paid or charged per year."
+      },
+      {
+        lesson: "2-3",
+        term: "Simple interest",
+        definition:
+          "Interest calculated only on the principal, using the formula I = prt."
+      },
+      {
+        lesson: "2-3",
+        term: "Minimum balance",
+        definition:
+          "A required amount of money that must be kept in an account."
+      },
+      {
+        lesson: "2-3",
+        term: "Maturity",
+        definition:
+          "A specified date on which interest is paid on money in an account."
+      },
+      {
+        lesson: "2-4",
+        term: "Compound interest",
+        definition:
+          "Interest earned on deposited money plus previously earned interest."
+      },
+      {
+        lesson: "2-4",
+        term: "Annual compounding",
+        definition:
+          "A method of calculating interest once each year."
+      },
+      {
+        lesson: "2-4",
+        term: "Semiannual compounding",
+        definition:
+          "A method of calculating interest twice a year, or every six months."
+      },
+      {
+        lesson: "2-4",
+        term: "Quarterly compounding",
+        definition:
+          "A method of calculating interest four times a year, or every three months."
+      },
+      {
+        lesson: "2-4",
+        term: "Daily compounding",
+        definition:
+          "A method of calculating interest every day."
+      },
+      {
+        lesson: "2-6",
+        term: "Continuous compounding",
+        definition:
+          "A method in which interest is treated as being compounded an infinite number of times each year."
+      }
+    ];
+
+    const lessonNames = {
+      "2-1": "Lesson 2-1: Checking Accounts",
+      "2-2": "Lesson 2-2: Reconciling a Bank Statement",
+      "2-3": "Lesson 2-3: Savings Accounts",
+      "2-4": "Lesson 2-4: Exploring Compound Interest",
+      "2-6": "Lesson 2-6: Continuous Compounding"
+    };
+
+    const lessonSelect = document.getElementById("lessonSelect");
+    const startButton = document.getElementById("startButton");
+    const skipButton = document.getElementById("skipButton");
+    const playAgainButton = document.getElementById("playAgainButton");
+    const lessonLabel = document.getElementById("lessonLabel");
+    const termText = document.getElementById("termText");
+    const termNumber = document.getElementById("termNumber");
+    const definitionList = document.getElementById("definitionList");
+    const feedback = document.getElementById("feedback");
+    const matchedCount = document.getElementById("matchedCount");
+    const correctCount = document.getElementById("correctCount");
+    const attemptCount = document.getElementById("attemptCount");
+    const accuracyCount = document.getElementById("accuracyCount");
+    const progressBar = document.getElementById("progressBar");
+    const progressTrack = document.querySelector(".progress-track");
+    const activityArea = document.getElementById("activityArea");
+    const completionArea = document.getElementById("completionArea");
+    const finalResults = document.getElementById("finalResults");
+
+    let activityItems = [];
+    let remainingItems = [];
+    let availableDefinitions = [];
+    let currentItem = null;
+    let matched = 0;
+    let correctChoices = 0;
+    let attempts = 0;
+    let locked = false;
+
+    function shuffle(items) {
+      const copy = [...items];
+
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+
+      return copy;
+    }
+
+    function startActivity() {
+      const selectedLesson = lessonSelect.value;
+
+      activityItems =
+        selectedLesson === "all"
+          ? [...vocabulary]
+          : vocabulary.filter(item => item.lesson === selectedLesson);
+
+      remainingItems = shuffle(activityItems);
+      availableDefinitions = [...activityItems];
+      currentItem = null;
+      matched = 0;
+      correctChoices = 0;
+      attempts = 0;
+      locked = false;
+
+      activityArea.classList.remove("hidden");
+      completionArea.classList.add("hidden");
+
+      updateScore();
+      showNextTerm();
+    }
+
+    function showNextTerm() {
+      clearFeedback();
+
+      if (remainingItems.length === 0) {
+        finishActivity();
+        return;
+      }
+
+      currentItem = remainingItems.shift();
+      lessonLabel.textContent = lessonNames[currentItem.lesson];
+      termText.textContent = currentItem.term;
+      termNumber.textContent =
+        `Term ${matched + 1} of ${activityItems.length}`;
+
+      renderDefinitions();
+    }
+
+    function renderDefinitions() {
+      definitionList.innerHTML = "";
+
+      shuffle(availableDefinitions).forEach(item => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "definition-card";
+        button.textContent = item.definition;
+        button.dataset.term = item.term;
+        button.addEventListener("click", () => checkAnswer(button, item));
+        definitionList.appendChild(button);
+      });
+    }
+
+    function checkAnswer(button, selectedItem) {
+      if (locked) return;
+
+      attempts++;
+
+      if (selectedItem.term === currentItem.term) {
+        locked = true;
+        correctChoices++;
+        matched++;
+
+        button.classList.add("correct");
+        button.textContent = `Correct! ${selectedItem.definition}`;
+        setFeedback(
+          `Correct - "${currentItem.term}" matches this definition.`,
+          "correct"
+        );
+
+        availableDefinitions = availableDefinitions.filter(
+          item => item.term !== currentItem.term
+        );
+
+        updateScore();
+
+        window.setTimeout(() => {
+          locked = false;
+          showNextTerm();
+        }, 900);
+      } else {
+        button.classList.add("incorrect");
+        setFeedback(
+          `Not quite. That definition belongs to "${selectedItem.term}." Try another definition for "${currentItem.term}."`,
+          "incorrect"
+        );
+
+        window.setTimeout(() => {
+          button.classList.remove("incorrect");
+        }, 650);
+
+        updateScore();
+      }
+    }
+
+    function skipTerm() {
+      if (!currentItem || locked || remainingItems.length === 0) {
+        setFeedback(
+          "There are no other terms available to skip to.",
+          "neutral"
+        );
+        return;
+      }
+
+      remainingItems.push(currentItem);
+      showNextTerm();
+      setFeedback(
+        "Term skipped. It will return before the activity ends.",
+        "neutral"
+      );
+    }
+
+    function updateScore() {
+      matchedCount.textContent = matched;
+      correctCount.textContent = correctChoices;
+      attemptCount.textContent = attempts;
+
+      const accuracy =
+        attempts === 0 ? 0 : Math.round((correctChoices / attempts) * 100);
+
+      accuracyCount.textContent = `${accuracy}%`;
+
+      const progress =
+        activityItems.length === 0
+          ? 0
+          : Math.round((matched / activityItems.length) * 100);
+
+      progressBar.style.width = `${progress}%`;
+      progressTrack.setAttribute("aria-valuenow", progress);
+    }
+
+    function setFeedback(message, type) {
+      feedback.textContent = message;
+      feedback.className = `feedback ${type}`;
+    }
+
+    function clearFeedback() {
+      setFeedback(
+        `Choose the definition that matches "${currentItem?.term || ""}."`,
+        "neutral"
+      );
+    }
+
+    function finishActivity() {
+      updateScore();
+
+      const accuracy =
+        attempts === 0 ? 0 : Math.round((correctChoices / attempts) * 100);
+
+      activityArea.classList.add("hidden");
+      completionArea.classList.remove("hidden");
+
+      finalResults.textContent =
+        `You matched all ${activityItems.length} terms with ${accuracy}% accuracy across ${attempts} attempts.`;
+    }
+
+    startButton.addEventListener("click", startActivity);
+    skipButton.addEventListener("click", skipTerm);
+    playAgainButton.addEventListener("click", startActivity);
+  </script>
+</body>
+</html>
